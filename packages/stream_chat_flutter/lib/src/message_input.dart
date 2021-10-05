@@ -703,7 +703,7 @@ class MessageInputState extends State<MessageInput> {
                     decoration: _getInputDecoration(context),
                     textCapitalization: TextCapitalization.sentences,
                   ),
-                )
+                ),
               ],
             ),
           ),
