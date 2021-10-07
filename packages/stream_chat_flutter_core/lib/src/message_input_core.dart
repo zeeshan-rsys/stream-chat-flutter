@@ -8,6 +8,8 @@ enum WidgetPosition {
   outside,
 }
 
+const _kMinMediaPickerSize = 360.0;
+
 /// A callback that can be passed to [MessageInputCore.onError].
 ///
 /// This callback should not throw.
@@ -17,6 +19,11 @@ typedef ErrorListener = void Function(
   Object error,
   StackTrace? stackTrace,
 );
+
+typedef SendButtonBuilder = Widget Function(
+      BuildContext context,
+      String text,
+    );
 
 /// A callback that can be passed to [MessageInput.onAttachmentLimitExceed].
 ///
@@ -31,13 +38,16 @@ class MessageInputCore extends StatefulWidget {
   /// Instantiate a new [MessageListView].
   const MessageInputCore({
     Key? key,
+    this.textEditingController,
     this.messageInputController,
     this.maxHeight = 150,
     this.keyboardType = TextInputType.multiline,
-    this.leading,
+    this.leadingBuilder,
     this.leadingPosition = WidgetPosition.outside,
-    this.trailing,
+    this.trailingBuilder,
     this.trailingPosition = WidgetPosition.outside,
+    this.sendButtonPosition = WidgetPosition.outside,
+    this.sendButtonBuilder,
     this.autofocus = false,
     this.focusNode,
     this.quotedMessage,
@@ -51,7 +61,12 @@ class MessageInputCore extends StatefulWidget {
     this.onError,
     this.onAttachmentLimitExceed,
     this.attachmentLimit = 10,
+    this.bottomSheetBuilder,
+    this.bottomBuilder,
   }) : super(key: key);
+
+  /// The text controller of the TextField
+  final TextEditingController? textEditingController;
 
   /// A [MessageListController] allows pagination.
   /// Use [ChannelListController.paginateData] pagination.
@@ -63,13 +78,17 @@ class MessageInputCore extends StatefulWidget {
   /// The keyboard type assigned to the TextField
   final TextInputType keyboardType;
 
-  final Widget? leading;
+  final WidgetBuilder? leadingBuilder;
 
   final WidgetPosition leadingPosition;
 
-  final Widget? trailing;
+  final WidgetBuilder? trailingBuilder;
 
   final WidgetPosition trailingPosition;
+
+  final WidgetPosition sendButtonPosition;
+
+  final SendButtonBuilder? sendButtonBuilder;
 
   /// Autofocus property passed to the TextField
   final bool autofocus;
@@ -112,6 +131,10 @@ class MessageInputCore extends StatefulWidget {
   /// A limit for the no. of attachments that can be sent with a single message.
   final int attachmentLimit;
 
+  final WidgetBuilder? bottomSheetBuilder;
+
+  final WidgetBuilder? bottomBuilder;
+
   @override
   MessageInputCoreState createState() => MessageInputCoreState();
 }
@@ -119,7 +142,11 @@ class MessageInputCore extends StatefulWidget {
 /// The current state of the [MessageListCore].
 class MessageInputCoreState extends State<MessageInputCore> {
   StreamChannelState? _streamChannel;
-  TextEditingController textEditingController = TextEditingController();
+
+  /// The editing controller passed to the input TextField
+  late final TextEditingController textEditingController =
+      widget.textEditingController ?? TextEditingController();
+
   late final _focusNode = widget.focusNode ?? FocusNode();
 
   bool _openBottomSheet = false;
@@ -158,19 +185,92 @@ class MessageInputCoreState extends State<MessageInputCore> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: _buildTextField(context),
             ),
-            if (widget.parentMessage != null && !widget.hideSendAsDm)
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 12,
-                  left: 12,
-                  bottom: 12,
-                ),
-                child: _buildDmCheckbox(),
-              ),
-            _buildFilePickerSection(),
+            if (widget.bottomBuilder != null) widget.bottomBuilder!(context),
+            if (widget.bottomSheetBuilder != null) _buildFilePickerSection(),
           ],
         ),
       ),
+    );
+  }
+
+  Flex _buildTextField(BuildContext context) => Flex(
+    direction: Axis.horizontal,
+    children: <Widget>[
+      if (!_commandEnabled &&
+          widget.leadingPosition == WidgetPosition.outside && widget.leadingBuilder != null)
+        widget.leadingBuilder!(context),
+      _buildTextInput(context),
+      if (!_commandEnabled &&
+          widget.trailingPosition == WidgetPosition.outside)
+        widget.trailingBuilder!(context)
+      if (widget.sendButtonPosition == WidgetPosition.outside)
+        widget.sendButtonBuilder!(context, textEditingController.text),
+    ],
+  );
+
+  Expanded _buildTextInput(BuildContext context) {
+    final margin = (widget.sendButtonPosition == WidgetPosition.inside
+        ? const EdgeInsets.only(right: 8)
+        : EdgeInsets.zero) +
+        (widget.leadingPosition != WidgetPosition.outside || _commandEnabled
+            ? const EdgeInsets.only(left: 8)
+            : EdgeInsets.zero);
+    return Expanded(
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        margin: margin,
+        decoration: BoxDecoration(
+          borderRadius: _messageInputTheme.borderRadius,
+          gradient: _focusNode.hasFocus
+              ? _messageInputTheme.activeBorderGradient
+              : _messageInputTheme.idleBorderGradient,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(1.5),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: _messageInputTheme.borderRadius,
+              color: _messageInputTheme.inputBackgroundColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildReplyToMessage(),
+                _buildAttachments(),
+                LimitedBox(
+                  maxHeight: widget.maxHeight,
+                  child: TextField(
+                    key: const Key('messageInputText'),
+                    enabled: _inputEnabled,
+                    maxLines: null,
+                    onSubmitted: (_) => sendMessage(),
+                    keyboardType: widget.keyboardType,
+                    controller: textEditingController,
+                    focusNode: _focusNode,
+                    style: _messageInputTheme.inputTextStyle,
+                    autofocus: widget.autofocus,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: _getInputDecoration(context),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilePickerSection() {
+    return AnimatedContainer(
+      duration: _openBottomSheet
+          ? const Duration(milliseconds: 300)
+          : const Duration(),
+      curve: Curves.easeOut,
+      height: _openBottomSheet ? _kMinMediaPickerSize : 0,
+      child: widget.bottomSheetBuilder!(context),
     );
   }
 
@@ -269,9 +369,17 @@ class MessageInputCoreState extends State<MessageInputCore> {
     }
   }
 
-  Future<void> openBottomSheet() async {}
+  Future<void> openBottomSheet() async {
+    setState(() {
+      _openBottomSheet = true;
+    });
+  }
 
-  Future<void> closeBottomSheet() async {}
+  Future<void> closeBottomSheet() async {
+    setState(() {
+      _openBottomSheet = false;
+    });
+  }
 
   void _parseExistingMessage(Message message) {
     final messageText = message.text;
@@ -291,6 +399,30 @@ class MessageInputCoreState extends State<MessageInputCore> {
     }
     for (final attachment in attachments) {
       _attachments[attachment.id] = attachment;
+    }
+  }
+
+  /// Adds an attachment to the [_attachments] map
+  Future<void> _addAttachment(Attachment attachment) async {
+    final limit = widget.attachmentLimit;
+    final length = _attachments.length + 1;
+    if (length > limit) {
+      final onAttachmentLimitExceed = widget.onAttachmentLimitExceed;
+      if (onAttachmentLimitExceed != null) {
+        return onAttachmentLimitExceed(widget.attachmentLimit);
+      }
+    }
+    setState(() {
+      _attachments[attachment.id] = attachment;
+    });
+  }
+
+  /// Removes an attachment from the [_attachments] map
+  Future<void> _removeAttachment(Attachment attachment) async {
+    if (_attachments.containsKey(attachment.id)) {
+      setState(() {
+        _attachments[attachment.id] = attachment;
+      });
     }
   }
 
@@ -355,6 +487,8 @@ class MessageInputCoreState extends State<MessageInputCore> {
       widget.messageInputController!.sendMessage = sendMessage;
       widget.messageInputController!.openBottomSheet = openBottomSheet;
       widget.messageInputController!.closeBottomSheet = closeBottomSheet;
+      widget.messageInputController!.addAttachment = _addAttachment;
+      widget.messageInputController!.removeAttachment = _removeAttachment;
     }
   }
 }
@@ -368,4 +502,8 @@ class MessageInputController {
   Future<void> Function()? openBottomSheet;
 
   Future<void> Function()? closeBottomSheet;
+
+  Future<void> Function(Attachment)? addAttachment;
+
+  Future<void> Function(Attachment)? removeAttachment;
 }
