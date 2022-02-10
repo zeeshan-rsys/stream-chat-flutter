@@ -2,8 +2,8 @@
 
 🛑️ Breaking Changes
 
-- `pinPermissions` is no longer needed in `MessageListView`.
-- `MessageInput` now works with a `MessageInputController` instead of a `TextEditingController`
+- `pinPermissions` is no longer needed in `MessageListView`, the permissions are automatically fetched from the Stream backend. To enable users to pin the message, make sure the pin permissions are granted for different types of users on the dashboard.
+- `MessageInput` now works with a `MessageInputController` instead of a `TextEditingController`.
 
 🐞 Fixed
 
@@ -13,8 +13,8 @@
 
 ✅ Added
 
-- Videos can now be auto-played in `FullScreenMedia`
-- Extra customisation options for `MessageInput`
+- Videos can now be auto-played in `FullScreenMedia`.
+- Extra customisation options for `MessageInput`.
 
 🔄 Changed
 
