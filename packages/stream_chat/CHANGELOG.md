@@ -1,3 +1,9 @@
+## 3.6.2
+
+🐞 Fixed
+
+- Fix WebSocket contemporary connection calls while disconnecting
+
 ## 3.6.1
 
 🐞 Fixed
