@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package stream.chat.client_v2_rpc;
+
+import "client_v2_rpc/channel.proto";
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/client_v2_rpc;client_v2_rpc";
+
+// ClientRPC specific RPC methods.
+// for end-user interactions.
+service ClientRPC {
+
+  // Get or create a channel.
+  // If the channel does not exist, it will be created. but if it does, it will be returned.
+  rpc GetChannel(GetChannelRequest) returns (GetChannelResponse);
+
+  // Query channels.
+  // Returns a list of channels that match the query parameters.
+  // TODO: rename to QueryChannels
+  rpc QueryChannels(QueryChannelsRequest) returns (QueryChannelsResponse);
+}

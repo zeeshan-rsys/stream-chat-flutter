@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart';
+import 'package:stream_chat/protobuf/client_v2_rpc/rpc.pbtwirp.dart';
 import 'package:stream_chat/src/core/api/attachment_file_uploader.dart';
 import 'package:stream_chat/src/core/api/channel_api.dart';
 import 'package:stream_chat/src/core/api/device_api.dart';
@@ -10,6 +11,9 @@ import 'package:stream_chat/src/core/api/user_api.dart';
 import 'package:stream_chat/src/core/http/connection_id_manager.dart';
 import 'package:stream_chat/src/core/http/stream_http_client.dart';
 import 'package:stream_chat/src/core/http/token_manager.dart';
+import 'package:stream_chat/src/core/rpc/interceptors.dart';
+import 'package:stream_chat/src/core/rpc/stream_rpc_client_options.dart';
+import 'package:tart/tart.dart';
 
 export 'device_api.dart' show PushProvider;
 
@@ -19,7 +23,9 @@ class StreamChatApi {
   StreamChatApi(
     String apiKey, {
     StreamHttpClient? client,
+    ClientRPC? clientRPC,
     StreamHttpClientOptions? options,
+    StreamRPCClientOptions rpcOptions = const StreamRPCClientOptions(),
     TokenManager? tokenManager,
     ConnectionIdManager? connectionIdManager,
     AttachmentFileUploaderProvider attachmentFileUploaderProvider =
@@ -33,9 +39,18 @@ class StreamChatApi {
               tokenManager: tokenManager,
               connectionIdManager: connectionIdManager,
               logger: logger,
+            ),
+        _clientRPC = clientRPC ??
+            ClientRPCProtobufClient(
+              rpcOptions.baseUrl,
+              rpcOptions.prefix,
+              interceptor: chainInterceptor([
+                if (tokenManager != null) authInterceptor(tokenManager),
+              ]),
             );
 
   final StreamHttpClient _client;
+  final ClientRPC _clientRPC;
   final AttachmentFileUploaderProvider _fileUploaderProvider;
 
   UserApi? _user;
@@ -56,7 +71,10 @@ class StreamChatApi {
   ChannelApi? _channel;
 
   /// Api dedicated to channel operations
-  ChannelApi get channel => _channel ??= ChannelApi(_client);
+  ChannelApi get channel => _channel ??= ChannelApi(
+        _client,
+        _clientRPC,
+      );
 
   DeviceApi? _device;
 

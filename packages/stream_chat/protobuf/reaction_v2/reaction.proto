@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package stream.chat.reaction_v2;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "user_v2/user.proto";
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/reaction_v2;reaction_v2";
+
+// Message reaction, referenced by the message
+message Reaction {
+  // ID of the user who sent the reaction
+  string user_id = 1;
+  // ID of the message the reaction is for
+  // message_id will be ommited when reaction is included into Message View or other message related envelopes
+  google.protobuf.StringValue message_id = 2;
+  // Reaction type (e.g. like, happy, crying)
+  string type = 3;
+  // Score of the reaction. Only used for Medium style of reactions (e.g. "+10 claps")
+  int64 score = 4;
+  // JSON encoded custom data attached to reactions
+  bytes custom_json = 5;
+  // Date of reaction creation
+  google.protobuf.Timestamp created_at = 6;
+  // Date of last reaction update
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// A view that contains additional reaction data
+message ReactionView {
+  // The reaction
+  Reaction reaction = 1;
+  // User who sent the reaction
+  stream.chat.user_v2.User user = 2;
+}
+
+// A collection of reaction views
+message ReactionViews {
+  // List of reaction views
+  repeated ReactionView reactions = 1;
+}

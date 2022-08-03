@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+package stream.chat.client_v2_rpc;
+
+import "channel_v2/channel.proto";
+import "utils_v2/utils.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/client_v2_rpc;client_v2_rpc";
+
+// A view which User gets when they request a channel
+message ChannelUserView {
+  // Contains base channel view.
+  stream.chat.channel_v2.ChannelView channel_view = 1;
+
+  // Contains user settings for this channel.
+  ChannelUserSettings user_settings = 2;
+
+  // List of channel capabilities that are available to the user.
+  repeated ChannelCapability capabilities = 3;
+
+  // Contains information about the authorized user
+  // on this channel.
+  stream.chat.channel_v2.ChannelMemberView membership = 4;
+}
+
+// Request to get or create a channel.
+message GetChannelRequest {
+  // Channel identifier object.
+  stream.chat.channel_v2.ChannelIdentifier identifier = 1;
+}
+
+// Response to get or create a channel.
+message GetChannelResponse {
+  // Contains base channel view.
+  ChannelUserView channel = 1;
+}
+
+// Contains states of the channel for the authorized user.
+message ChannelUserSettings {
+  // Whether the channel is hidden.
+  bool hidden = 1;
+
+  // Whether the channel is muted.
+  bool muted = 2;
+
+  // Contains date of the mute expiration. If it's empty, mute will never expire.
+  google.protobuf.Timestamp mute_expires_at = 3;
+}
+
+// Request to get the list of channels.
+message QueryChannelsRequest {
+  // Set of filters in MQ format, JSON encoded
+  bytes mq = 1;
+  // Pager to perform offset based pagination. Default limit is 20 (TODO: validate)
+  stream.chat.utils_v2.Pager pager = 2;
+  // Sort is used to provide sort direction. By default channels are sort by XX ASC (TODO: fill this in)
+  repeated stream.chat.utils_v2.Sort sort = 3;
+}
+
+// Request to get the list of channels.
+message QueryChannelsResponse {
+  // List of channels.
+  repeated ChannelUserView channels = 1;
+}
+
+// ChannelCapability is a enum containing all known channel capabilities.
+// Each capability takes into account user permissions and features that channel supports
+enum ChannelCapability {
+  // Capability is unspecified.
+  CHANNEL_CAPABILITY_UNSPECIFIED = 0;
+
+  // Capability to send messages.
+  CHANNEL_CAPABILITY_SEND_MESSAGE = 1;
+
+  // Capability to send replies.
+  CHANNEL_CAPABILITY_SEND_REPLY = 2;
+
+  // Capability to send reactions.
+  CHANNEL_CAPABILITY_SEND_REACTION = 3;
+
+  // Capability to send links.
+  CHANNEL_CAPABILITY_SEND_LINKS = 4;
+
+  // Capability to freeze channel.
+  CHANNEL_CAPABILITY_FREEZE_CHANNEL = 5;
+
+  // Capability to modify channel cooldown.
+  CHANNEL_CAPABILITY_SET_CHANNEL_COOLDOWN = 6;
+
+  // Capability to leave the channel.
+  CHANNEL_CAPABILITY_LEAVE_CHANNEL = 7;
+
+  // Capability to join the channel.
+  CHANNEL_CAPABILITY_JOIN_CHANNEL = 8;
+
+  // Capability to pin a message.
+  CHANNEL_CAPABILITY_PIN_MESSAGE = 9;
+
+  // Capability to delete any messages.
+  CHANNEL_CAPABILITY_DELETE_ANY_MESSAGE = 10;
+
+  // Capability to delete own messages.
+  CHANNEL_CAPABILITY_DELETE_OWN_MESSAGE = 11;
+
+  // Capability to update any messages.
+  CHANNEL_CAPABILITY_UPDATE_ANY_MESSAGE = 12;
+
+  // Capability to update own messages.
+  CHANNEL_CAPABILITY_UPDATE_OWN_MESSAGE = 13;
+
+  // Capability to search messages.
+  CHANNEL_CAPABILITY_SEARCH_MESSAGES = 14;
+
+  // Capability to search messages.
+  CHANNEL_CAPABILITY_SEND_TYPING_EVENTS = 15;
+
+  // Capability to upload a file
+  CHANNEL_CAPABILITY_UPLOAD_FILE = 16;
+
+  // Capability to delete the channel.
+  CHANNEL_CAPABILITY_DELETE_CHANNEL = 17;
+
+  // Capability to update the channel.
+  CHANNEL_CAPABILITY_UPDATE_CHANNEL = 18;
+
+  // Capability to update the channel members.
+  CHANNEL_CAPABILITY_UPDATE_CHANNEL_MEMBERS = 19;
+
+  // Capability to quote messages.
+  CHANNEL_CAPABILITY_QUOTE_MESSAGE = 20;
+
+  // Capability to ban channel members.
+  CHANNEL_CAPABILITY_BAN_CHANNEL_MEMBERS = 21;
+
+  // Capability to flag messages.
+  CHANNEL_CAPABILITY_FLAG_MESSAGE = 22;
+
+  // Capability to mute channel.
+  CHANNEL_CAPABILITY_MUTE_CHANNEL = 23;
+
+  // Capability to populate `custom` event.
+  CHANNEL_CAPABILITY_SEND_CUSTOM_EVENTS = 24;
+
+  // Capability to populate `read` event.
+  CHANNEL_CAPABILITY_READ_EVENTS = 25;
+
+  // Capability to populate `connect` event.
+  CHANNEL_CAPABILITY_CONNECT_EVENTS = 26;
+
+  // Capability to populate `typing` event.
+  CHANNEL_CAPABILITY_TYPING_EVENTS = 27;
+
+  // Capability to modify slow mode.
+  CHANNEL_CAPABILITY_SLOW_MODE = 28;
+
+  // Capability to join a call.
+  CHANNEL_CAPABILITY_JOIN_CALL = 29;
+
+  // Capability to create a call.
+  CHANNEL_CAPABILITY_CREATE_CALL = 30;
+}

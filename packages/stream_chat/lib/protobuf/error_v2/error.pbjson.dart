@@ -1,0 +1,60 @@
+///
+//  Generated code. Do not modify.
+//  source: error_v2/error.proto
+//
+// @dart = 2.12
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,deprecated_member_use_from_same_package,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
+
+import 'dart:core' as $core;
+import 'dart:convert' as $convert;
+import 'dart:typed_data' as $typed_data;
+@$core.Deprecated('Use errorCodeDescriptor instead')
+const ErrorCode$json = const {
+  '1': 'ErrorCode',
+  '2': const [
+    const {'1': 'ERROR_CODE_UNSPECIFIED', '2': 0},
+    const {'1': 'ERROR_CODE_VALIDATION', '2': 1},
+    const {'1': 'ERROR_CODE_INTERNAL', '2': -1},
+    const {'1': 'ERROR_CODE_ACCESS_KEY', '2': 2},
+    const {'1': 'ERROR_CODE_AUTH', '2': 5},
+    const {'1': 'ERROR_CODE_DUPLICATE_USERNAME', '2': 6},
+    const {'1': 'ERROR_CODE_RATELIMITED', '2': 9},
+    const {'1': 'ERROR_CODE_NOTFOUND', '2': 16},
+    const {'1': 'ERROR_CODE_NOT_ALLOWED', '2': 17},
+    const {'1': 'ERROR_CODE_EVENT_NOT_SUPPORTED', '2': 18},
+    const {'1': 'ERROR_CODE_CHANNEL_FEATURE_NOT_SUPPORTED', '2': 19},
+    const {'1': 'ERROR_CODE_MESSAGE_TOO_LONG', '2': 20},
+    const {'1': 'ERROR_CODE_MULTIPLE_NESTING_LEVEL', '2': 21},
+    const {'1': 'ERROR_CODE_PAYLOAD_TOO_BIG', '2': 22},
+    const {'1': 'ERROR_CODE_TOKEN_EXPIRED', '2': 40},
+    const {'1': 'ERROR_CODE_TOKEN_INVALID_YET', '2': 41},
+    const {'1': 'ERROR_CODE_TOKEN_USED_BEFORE_IAT', '2': 42},
+    const {'1': 'ERROR_CODE_TOKEN_INVALID_SIGNATURE', '2': 43},
+    const {'1': 'ERROR_CODE_CUSTOM_COMMAND_ENDPOINT_MISSING', '2': 44},
+    const {'1': 'ERROR_CODE_CUSTOM_COMMAND_ENDPOINT_CALL_ERROR', '2': 45},
+    const {'1': 'ERROR_CODE_CONNECTION_ID_NOT_FOUND', '2': 46},
+    const {'1': 'ERROR_CODE_COOLDOWN_PERIOD_NOT_MET', '2': 60},
+    const {'1': 'ERROR_CODE_QUERY_CHANNEL_PERMISSIONS_MISMATCH', '2': 70},
+    const {'1': 'ERROR_CODE_TOO_MANY_CONNECTIONS', '2': 71},
+    const {'1': 'ERROR_CODE_NOT_SUPPORTED_IN_PUSH_V1', '2': 72},
+    const {'1': 'ERROR_CODE_MODERATION_FAILED', '2': 73},
+    const {'1': 'ERROR_CODE_VIDEO_PROVIDER_NOT_CONFIGURED', '2': 80},
+    const {'1': 'ERROR_CODE_INVALID_CALL_ID', '2': 81},
+    const {'1': 'ERROR_CODE_VIDEO_CREATE_CALL_FAILED', '2': 82},
+    const {'1': 'ERROR_CODE_APP_SUSPENDED', '2': 99},
+  ],
+};
+
+/// Descriptor for `ErrorCode`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List errorCodeDescriptor = $convert.base64Decode('CglFcnJvckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhkKFUVSUk9SX0NPREVfVkFMSURBVElPThABEiAKE0VSUk9SX0NPREVfSU5URVJOQUwQ////////////ARIZChVFUlJPUl9DT0RFX0FDQ0VTU19LRVkQAhITCg9FUlJPUl9DT0RFX0FVVEgQBRIhCh1FUlJPUl9DT0RFX0RVUExJQ0FURV9VU0VSTkFNRRAGEhoKFkVSUk9SX0NPREVfUkFURUxJTUlURUQQCRIXChNFUlJPUl9DT0RFX05PVEZPVU5EEBASGgoWRVJST1JfQ09ERV9OT1RfQUxMT1dFRBAREiIKHkVSUk9SX0NPREVfRVZFTlRfTk9UX1NVUFBPUlRFRBASEiwKKEVSUk9SX0NPREVfQ0hBTk5FTF9GRUFUVVJFX05PVF9TVVBQT1JURUQQExIfChtFUlJPUl9DT0RFX01FU1NBR0VfVE9PX0xPTkcQFBIlCiFFUlJPUl9DT0RFX01VTFRJUExFX05FU1RJTkdfTEVWRUwQFRIeChpFUlJPUl9DT0RFX1BBWUxPQURfVE9PX0JJRxAWEhwKGEVSUk9SX0NPREVfVE9LRU5fRVhQSVJFRBAoEiAKHEVSUk9SX0NPREVfVE9LRU5fSU5WQUxJRF9ZRVQQKRIkCiBFUlJPUl9DT0RFX1RPS0VOX1VTRURfQkVGT1JFX0lBVBAqEiYKIkVSUk9SX0NPREVfVE9LRU5fSU5WQUxJRF9TSUdOQVRVUkUQKxIuCipFUlJPUl9DT0RFX0NVU1RPTV9DT01NQU5EX0VORFBPSU5UX01JU1NJTkcQLBIxCi1FUlJPUl9DT0RFX0NVU1RPTV9DT01NQU5EX0VORFBPSU5UX0NBTExfRVJST1IQLRImCiJFUlJPUl9DT0RFX0NPTk5FQ1RJT05fSURfTk9UX0ZPVU5EEC4SJgoiRVJST1JfQ09ERV9DT09MRE9XTl9QRVJJT0RfTk9UX01FVBA8EjEKLUVSUk9SX0NPREVfUVVFUllfQ0hBTk5FTF9QRVJNSVNTSU9OU19NSVNNQVRDSBBGEiMKH0VSUk9SX0NPREVfVE9PX01BTllfQ09OTkVDVElPTlMQRxInCiNFUlJPUl9DT0RFX05PVF9TVVBQT1JURURfSU5fUFVTSF9WMRBIEiAKHEVSUk9SX0NPREVfTU9ERVJBVElPTl9GQUlMRUQQSRIsCihFUlJPUl9DT0RFX1ZJREVPX1BST1ZJREVSX05PVF9DT05GSUdVUkVEEFASHgoaRVJST1JfQ09ERV9JTlZBTElEX0NBTExfSUQQURInCiNFUlJPUl9DT0RFX1ZJREVPX0NSRUFURV9DQUxMX0ZBSUxFRBBSEhwKGEVSUk9SX0NPREVfQVBQX1NVU1BFTkRFRBBj');
+@$core.Deprecated('Use validationErrorCodeDescriptor instead')
+const ValidationErrorCode$json = const {
+  '1': 'ValidationErrorCode',
+  '2': const [
+    const {'1': 'VALIDATION_ERROR_CODE_UNSPECIFIED', '2': 0},
+    const {'1': 'VALIDATION_ERROR_CODE_REQUIRED', '2': 1},
+  ],
+};
+
+/// Descriptor for `ValidationErrorCode`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List validationErrorCodeDescriptor = $convert.base64Decode('ChNWYWxpZGF0aW9uRXJyb3JDb2RlEiUKIVZBTElEQVRJT05fRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEiIKHlZBTElEQVRJT05fRVJST1JfQ09ERV9SRVFVSVJFRBAB');

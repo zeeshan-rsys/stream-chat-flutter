@@ -1,0 +1,156 @@
+// TODO: Work in progress
+//
+//
+// ----------------------------------------------------------------------------
+syntax = "proto3";
+
+package stream.chat.error_v2;
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/error_v2;error_v2";
+
+enum ErrorCode {
+  // It is unknown why the request failed.
+  // Normally, It's not possible to get this error.
+  // Unknown error.
+  ERROR_CODE_UNSPECIFIED = 0;
+
+  // This error carries additional metadata with fields that failed validation
+  // Each failed field has both error message and error code specific to failed validator
+  // Mapping:
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_VALIDATION = 1;
+
+  // TODO: We need to combine errors below into a few more generic errors.
+  // Work in progress.
+  // ...
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_INTERNAL = -1;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_ACCESS_KEY = 2;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_AUTH = 5;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_DUPLICATE_USERNAME = 6;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_RATELIMITED = 9;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_NOTFOUND = 16;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_NOT_ALLOWED = 17;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_EVENT_NOT_SUPPORTED = 18;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_CHANNEL_FEATURE_NOT_SUPPORTED = 19;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_MESSAGE_TOO_LONG = 20;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_MULTIPLE_NESTING_LEVEL = 21;
+
+  // * Twirp: ???
+  // * HTTP: ???
+  ERROR_CODE_PAYLOAD_TOO_BIG = 22;
+
+  // * Twirp: unauthenticated
+  // * HTTP: 401
+  ERROR_CODE_TOKEN_EXPIRED = 40;
+
+  // * Twirp: unauthenticated
+  // * HTTP: 401
+  ERROR_CODE_TOKEN_INVALID_YET = 41;
+
+  // * Twirp: unauthenticated
+  // * HTTP: 401
+  ERROR_CODE_TOKEN_USED_BEFORE_IAT = 42;
+
+  // * Twirp: unauthenticated
+  // * HTTP: 401
+  ERROR_CODE_TOKEN_INVALID_SIGNATURE = 43;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_CUSTOM_COMMAND_ENDPOINT_MISSING = 44;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_CUSTOM_COMMAND_ENDPOINT_CALL_ERROR = 45;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_CONNECTION_ID_NOT_FOUND = 46;
+
+  // * Twirp: permission_denied
+  // * HTTP: 403
+  ERROR_CODE_COOLDOWN_PERIOD_NOT_MET = 60;
+
+  // * Twirp: permission_denied
+  // * HTTP: 403
+  ERROR_CODE_QUERY_CHANNEL_PERMISSIONS_MISMATCH = 70;
+
+  // * Twirp: permission_denied
+  // * HTTP: 403
+  ERROR_CODE_TOO_MANY_CONNECTIONS = 71;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_NOT_SUPPORTED_IN_PUSH_V1 = 72;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_MODERATION_FAILED = 73;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_VIDEO_PROVIDER_NOT_CONFIGURED = 80;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_INVALID_CALL_ID = 81;
+
+  // * Twirp: invalid_argument
+  // * HTTP: 400
+  ERROR_CODE_VIDEO_CREATE_CALL_FAILED = 82;
+
+  // * Twirp: permission_denied
+  // * HTTP: 403
+  ERROR_CODE_APP_SUSPENDED = 99;
+}
+
+enum ValidationErrorCode {
+  VALIDATION_ERROR_CODE_UNSPECIFIED = 0;
+  VALIDATION_ERROR_CODE_REQUIRED = 1;
+}
+
+// Twirp example:
+// {
+//   "code": "unavailable",                 <- our codes should map to protocol defined standard codes (e.g. CODE_VALIDATION -> InvalidArgument)
+//   "msg": "Human-friendly error message", <- this error should be user friendly (e.g. SDKs can just show it on the screen and users will understand it)
+//   "meta": {                              <- map[string]string, this is a Twirp restriction, but it's enough for us to have exact metadata
+//     "stream_code": "1",                  <- application-specific error code that is defined in the ErrorCode enum. Arguably, can be ERROR_CODE_VALIDATION or just "validation"
+//     "err.data.created_by_id": "field is required", <- this is specific to the code itself (e.g. fields that vailed the validation)
+//     "err.data.created_by_id_code": "1",            <- error code specific to failed validator
+//   },
+// }
+//

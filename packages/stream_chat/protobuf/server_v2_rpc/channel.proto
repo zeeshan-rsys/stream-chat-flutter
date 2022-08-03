@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package stream.chat.server_v2_rpc;
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/server_v2_rpc;server_v2_rpc";
+
+message ChannelConfig {
+  // Whether typing events are enabled.
+  bool typing_events = 1;
+
+  // Whether read events are enabled.
+  bool read_events = 2;
+
+  // Whether connect events are enabled.
+  bool connect_events = 3;
+
+  // Whether custom events are enabled.
+  bool custom_events = 4;
+
+  // Whether search feature is enabled.
+  bool search = 5;
+
+  // Whether reactions are enabled.
+  bool reactions = 6;
+
+  // Whether replies (threads) are enabled.
+  bool replies = 7;
+
+  // Whether message quoting feature is enabled.
+  bool quotes = 8;
+
+  // Whether mute feature is enabled.
+  bool mutes = 9;
+
+  // Whether file uploads are enabled.
+  bool uploads = 10;
+
+  // Whether URL enrichment feature is enabled.
+  bool url_enrichment = 11;
+
+  // Whether push notifications are enabled.
+  bool push_notifications = 12;
+
+  // Whether reminders feature is enabled.
+  bool reminders = 13;
+
+  // Automatic moderation mode.
+  ChannelAutomodMode automod = 14;
+
+  // Automatic moderation behavior.
+  ChannelModerationBehavior automod_behavior = 15;
+
+  // Automatic moderation thresholds.
+  ChannelModerationThresholds automod_thresholds = 16;
+
+  // Blocklist ID that is active in this channel.
+  string blocklist = 17;
+
+  // Behavior of the blocklist.
+  ChannelModerationBehavior blocklist_behavior = 18;
+}
+
+// Thresholds for automatic moderation.
+message ChannelModerationThresholds {
+  // Thresholds for explicit content.
+  ChannelModerationThreshold explicit = 1;
+
+  // Thresholds for spam.
+  ChannelModerationThreshold spam = 2;
+
+  // Thresholds for toxic content.
+  ChannelModerationThreshold toxic = 3;
+}
+
+// Behavior thresholds for automatic moderaion.
+message ChannelModerationThreshold {
+  // Threshold for flagging a message.
+  double flag = 1;
+
+  // Threshold for blocking a message.
+  double block = 2;
+}
+
+// Behavior of moderation.
+enum ChannelModerationBehavior {
+  // Behavior is unspecified.
+  CHANNEL_MODERATION_BEHAVIOR_UNSPECIFIED = 0;
+
+  // Flag a message.
+  CHANNEL_MODERATION_BEHAVIOR_FLAG = 1;
+
+  // Block a message.
+  CHANNEL_MODERATION_BEHAVIOR_BLOCK = 2;
+}
+
+// Mode of automatic moderation.
+enum ChannelAutomodMode {
+  // Mode is unspecified.
+  CHANNEL_AUTOMOD_MODE_UNSPECIFIED = 0;
+
+  // Moderation is disabled.
+  CHANNEL_AUTOMOD_MODE_DISABLED = 1;
+
+  // Simple moderation.
+  CHANNEL_AUTOMOD_MODE_SIMPLE = 2;
+
+  // AI moderation.
+  CHANNEL_AUTOMOD_MODE_AI = 3;
+}

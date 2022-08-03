@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package stream.chat.user_v2;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/user_v2;user_v2";
+
+// Chat user model
+message User {
+  // Unique identifier of the User.
+  string id = 1;
+
+  // User's role in the permission system.
+  string role = 2;
+
+  // Contains information about user's online status.
+  UserOnlineStatus online_status = 3;
+
+  // Contains information about user's ban status.
+  UserBanStatus ban = 4;
+
+  // List of teams user is a part of.
+  repeated string teams = 5;
+
+  // Preferred language of a user.
+  string language = 6;
+
+  // custom is a JSON object which contains any user data.
+  // in JSON encoded messages it will be represented as base64 encoded bytes
+  bytes custom_json = 7;
+
+  // Date of creation of the user.
+  google.protobuf.Timestamp created_at = 8;
+
+  // Date of last update of user's data.
+  google.protobuf.Timestamp updated_at = 9;
+
+  // Date of deletion of the user.
+  google.protobuf.Timestamp deleted_at = 10;
+
+  // Date of deactivation of the user.
+  google.protobuf.Timestamp deactivated_at = 11;
+}
+
+// Contains information about user's online status.
+message UserOnlineStatus {
+  // Whether the user is online.
+  bool online = 1;
+
+  // Timestamp of the last activity.
+  google.protobuf.Timestamp last_active_at = 2;
+
+  // Invisibility condition of the user.
+  // Setting this field to true will cause the user to be marked as offline
+  // This field is not visible to other users
+  google.protobuf.BoolValue invisible = 3;
+}
+
+// Contains information about user's ban status.
+message UserBanStatus {
+  // Whether the user is banned.
+  bool banned = 1;
+
+  // Time when the user will be unbanned.
+  google.protobuf.Timestamp ban_expires_at = 2;
+}
+
+// TODO ===================================================
+// ========================================================
+// ========================================================
+// ========================================================
+// ========================================================
+
+message UserOwnView {
+  User user = 1;
+  UserPushNotificationsSettings push_settings = 2;
+  UserUnreadStatus unread = 3;
+}
+
+message UserSettings {
+  UserPushNotificationsSettings push = 2;
+}
+
+message UserPushNotificationsSettings {
+  bool disabled = 1;
+  google.protobuf.Timestamp disabled_until = 2;
+  repeated UserPushDevice devices = 3;
+}
+
+enum PushProvider {
+  PUSH_PROVIDER_UNSPECIFIED = 0;
+  PUSH_PROVIDER_FIREBASE = 1;
+  PUSH_PROVIDER_APN = 2;
+  PUSH_PROVIDER_HUAWEI = 3;
+  PUSH_PROVIDER_XIAOMI = 4;
+}
+
+message UserPushDevice {
+  string id = 1;
+  PushProvider push_provider = 2;
+  string push_provider_name = 3;
+}
+
+message UserUnreadStatus {
+  int64 unread_message_count = 1;
+  int64 unread_channels_count = 2;
+}
+
+// TODO: Q/A Do we need these data below?
+//
+message UserLatest {}
+
+message UserMute {}
+
+message UserChannelMute {}
+
+/*
+	Devices                  Devices      `json:"-" dynamodbav:"-"  pg:"," validate:"readonly" elastic:"-"`
+
+	// last 100 mutes
+	Mutes                    []*UserMute  `json:"-" dynamodbav:"-"  pg:"-" validate:"readonly" copy:"shallow" elastic:"-"`
+	// last 100 mutes
+	ChannelMutes             ChannelMutes `json:"-" dynamodbav:"-"  pg:"-" validate:"readonly" elastic:"-"`
+	// last 100 channels
+	LatestHiddenChannels     *[]string    `json:"-" dynamodbav:"-" elastic:"-"`
+
+	Unread                   int          `json:"-" dynamodbav:"-"  pg:"-" validate:"readonly" elastic:"-"`
+	UnreadChannels           int          `json:"-" dynamodbav:"-"  pg:"-" validate:"readonly" elastic:"-"`
+ */

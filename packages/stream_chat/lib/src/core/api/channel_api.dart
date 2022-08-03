@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:stream_chat/protobuf/channel_v2/channel.pb.dart';
+import 'package:stream_chat/protobuf/client_v2_rpc/channel.pb.dart';
+import 'package:stream_chat/protobuf/client_v2_rpc/rpc.pbtwirp.dart';
 import 'package:stream_chat/src/core/api/requests.dart';
 import 'package:stream_chat/src/core/api/responses.dart';
 import 'package:stream_chat/src/core/http/stream_http_client.dart';
@@ -8,13 +11,19 @@ import 'package:stream_chat/src/core/models/channel_state.dart';
 import 'package:stream_chat/src/core/models/event.dart';
 import 'package:stream_chat/src/core/models/filter.dart';
 import 'package:stream_chat/src/core/models/message.dart';
+import 'package:tart/tart.dart';
 
 /// Defines the api dedicated to channel operations
 class ChannelApi {
   /// Initialize a new channel api
-  ChannelApi(this._client);
+  ChannelApi(
+    this._client,
+    this._clientRPC,
+  );
 
   final StreamHttpClient _client;
+
+  final ClientRPC _clientRPC;
 
   String _getChannelUrl(String channelId, String channelType) =>
       '/channels/$channelType/$channelId';
@@ -31,6 +40,17 @@ class ChannelApi {
     PaginationParams? membersPagination,
     PaginationParams? watchersPagination,
   }) async {
+    final res = await _clientRPC.getChannel(
+      Context(),
+      GetChannelRequest(
+        identifier: ChannelIdentifier(
+          id: channelId,
+          type: channelType,
+        ),
+      ),
+    );
+
+    res.channel
     var channelPath = '/channels/$channelType';
     if (channelId != null) channelPath = '$channelPath/$channelId';
     final response = await _client.post(

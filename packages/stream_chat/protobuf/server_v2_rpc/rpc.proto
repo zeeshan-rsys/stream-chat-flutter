@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package stream.chat.server_v2_rpc;
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/server_v2_rpc;server_v2_rpc";
+
+// Server-side Chat service for end-user interactions
+service ServerRPC {
+  // TODO: Add methods
+  // ...
+}

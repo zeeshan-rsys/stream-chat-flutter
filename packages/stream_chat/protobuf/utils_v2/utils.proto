@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package stream.chat.utils_v2;
+
+option go_package = "github.com/GetStream/stream-services/protobuf/chat/utils_v2;utils_v2";
+
+// Instead of using "Pager" for LT, GT style, we can force users to use `mq` instead
+// Keep in mind that sort key should match with constraint to make pagination work, although we will probably allow this
+/*
+{
+  "id": {
+    "$lte": "asdsadasd"
+  }
+}
+*/
+
+// Pager is used to perform offset based pagination
+// In most cases it shouldn't be used, use MQ to query next page of data
+message Pager {
+  int64 limit = 1;
+  int64 offset = 2;
+}
+
+enum Direction {
+  DIRECTION_UNSPECIFIED = 0;
+  DIRECTION_DESC = -1;
+  DIRECTION_ASC = 1;
+}
+
+message Sort {
+  string field = 1;
+  Direction direction = 2;
+}
