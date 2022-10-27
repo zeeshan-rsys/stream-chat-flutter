@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/src/message_input/quoted_message_widget.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -15,6 +17,8 @@ class QuotedMessage extends StatefulWidget {
     required this.reverse,
     required this.hasNonUrlAttachments,
     this.onQuotedMessageTap,
+    required this.mainAxisAlignment,
+    required this.replyBuilder,
   });
 
   /// {@macro message}
@@ -28,6 +32,13 @@ class QuotedMessage extends StatefulWidget {
 
   /// {@macro hasNonUrlAttachments}
   final bool hasNonUrlAttachments;
+
+  /// align reply message to user's
+  final MainAxisAlignment mainAxisAlignment;
+
+  /// [quoted maessage ] custom builder
+  final Widget Function(BuildContext context, Message? quotedMessage)?
+      replyBuilder;
 
   @override
   State<QuotedMessage> createState() => _QuotedMessageState();
@@ -52,20 +63,24 @@ class _QuotedMessageState extends State<QuotedMessage> {
         ? () => widget.onQuotedMessageTap!(widget.message.quotedMessageId)
         : null;
     final chatThemeData = _streamChatTheme;
-    return StreamQuotedMessageWidget(
-      onTap: onTap,
-      message: widget.message.quotedMessage!,
-      messageTheme: isMyMessage
-          ? chatThemeData.otherMessageTheme
-          : chatThemeData.ownMessageTheme,
-      reverse: widget.reverse,
-      padding: EdgeInsets.only(
-        right: 8,
-        left: 8,
-        top: 8,
-        bottom: widget.hasNonUrlAttachments ? 8 : 0,
-      ),
-      composing: false,
-    );
+    log("message ${widget.replyBuilder}");
+    return widget.replyBuilder == null
+        ? StreamQuotedMessageWidget(
+            onTap: onTap,
+            mianAxisAlignment: widget.mainAxisAlignment,
+            message: widget.message.quotedMessage!,
+            messageTheme: isMyMessage
+                ? chatThemeData.otherMessageTheme
+                : chatThemeData.ownMessageTheme,
+            reverse: widget.reverse,
+            padding: EdgeInsets.only(
+              right: 8,
+              left: 8,
+              top: 8,
+              bottom: widget.hasNonUrlAttachments ? 8 : 0,
+            ),
+            composing: false,
+          )
+        : widget.replyBuilder!(context, widget.message.quotedMessage);
   }
 }

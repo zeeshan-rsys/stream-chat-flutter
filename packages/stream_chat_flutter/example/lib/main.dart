@@ -274,6 +274,7 @@ class _ChannelPageState extends State<ChannelPage> {
                         (context, details, messages, defaultWidget) {
                       return defaultWidget.copyWith(
                         onReplyTap: reply,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       );
                     },
                   ),
