@@ -96,6 +96,8 @@ class StreamMessageWidget extends StatefulWidget {
     this.imageAttachmentThumbnailSize = const Size(400, 400),
     this.imageAttachmentThumbnailResizeType = 'clip',
     this.imageAttachmentThumbnailCropType = 'center',
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    this.replyBuilder,
   }) : attachmentBuilders = {
           'image': (context, message, attachments) {
             final border = RoundedRectangleBorder(
@@ -526,6 +528,13 @@ class StreamMessageWidget extends StatefulWidget {
   final String /*center|top|bottom|left|right*/
       imageAttachmentThumbnailCropType;
 
+  /// align reply message to user's
+  MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+
+  /// [quoted maessage ] custom builder
+  final Widget Function(BuildContext context, Message? quotedMessage)?
+      replyBuilder;
+
   /// {@template copyWith}
   /// Creates a copy of [StreamMessageWidget] with specified attributes
   /// overridden.
@@ -586,9 +595,13 @@ class StreamMessageWidget extends StatefulWidget {
     Size? imageAttachmentThumbnailSize,
     String? imageAttachmentThumbnailResizeType,
     String? imageAttachmentThumbnailCropType,
+    MainAxisAlignment? mainAxisAlignment,
+    Widget Function(BuildContext context, Message? quotedMessage)? replyBuilder,
   }) {
     return StreamMessageWidget(
       key: key ?? this.key,
+      mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+      replyBuilder: replyBuilder,
       onMentionTap: onMentionTap ?? this.onMentionTap,
       onThreadTap: onThreadTap ?? this.onThreadTap,
       onReplyTap: onReplyTap ?? this.onReplyTap,
@@ -839,6 +852,8 @@ class _StreamMessageWidgetState extends State<StreamMessageWidget>
                       : Alignment.centerLeft,
                   widthFactor: widget.widthFactor,
                   child: MessageWidgetContent(
+                    mainAxisAlignment: widget.mainAxisAlignment,
+                    replyBuilder: widget.replyBuilder,
                     streamChatTheme: _streamChatTheme,
                     showUsername: showUsername,
                     showTimeStamp: showTimeStamp,

@@ -56,6 +56,8 @@ class MessageWidgetContent extends StatelessWidget {
     this.deletedBottomRowBuilder,
     this.userAvatarBuilder,
     this.usernameBuilder,
+    required this.mainAxisAlignment,
+    this.replyBuilder,
   });
 
   /// {@macro reverse}
@@ -186,6 +188,13 @@ class MessageWidgetContent extends StatelessWidget {
 
   /// {@macro usernameBuilder}
   final Widget Function(BuildContext, Message)? usernameBuilder;
+
+  /// align reply message to user's
+  final MainAxisAlignment mainAxisAlignment;
+
+  /// [quoted maessage ] custom builder
+  final Widget Function(BuildContext context, Message? quotedMessage)?
+      replyBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -325,6 +334,8 @@ class MessageWidgetContent extends StatelessWidget {
                                         ),
                                       )
                                     : MessageCard(
+                                        replyBuilder: replyBuilder,
+                                        mainAxisAlignment: mainAxisAlignment,
                                         message: message,
                                         isFailedState: isFailedState,
                                         showUserAvatar: showUserAvatar,

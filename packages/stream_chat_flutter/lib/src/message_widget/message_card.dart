@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'dart:developer' as d;
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
@@ -32,6 +32,8 @@ class MessageCard extends StatefulWidget {
     this.onLinkTap,
     this.onMentionTap,
     this.onQuotedMessageTap,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    required this.replyBuilder,
   });
 
   /// {@macro isFailedState}
@@ -94,6 +96,15 @@ class MessageCard extends StatefulWidget {
   /// {@macro reverse}
   final bool reverse;
 
+  /// align reply message to user's
+  final MainAxisAlignment mainAxisAlignment;
+
+
+  /// [quoted maessage ] custom builder
+  final Widget Function(BuildContext context, Message? quotedMessage)?
+      replyBuilder;
+
+
   @override
   State<MessageCard> createState() => _MessageCardState();
 }
@@ -129,6 +140,7 @@ class _MessageCardState extends State<MessageCard> {
 
   @override
   Widget build(BuildContext context) {
+    d.log('quoted - ${widget.hasQuotedMessage}');
     return Card(
       elevation: 0,
       margin: EdgeInsets.symmetric(
@@ -154,10 +166,12 @@ class _MessageCardState extends State<MessageCard> {
           children: [
             if (widget.hasQuotedMessage)
               QuotedMessage(
+                mainAxisAlignment: widget.mainAxisAlignment,
                 reverse: widget.reverse,
                 message: widget.message,
                 hasNonUrlAttachments: widget.hasNonUrlAttachments,
                 onQuotedMessageTap: widget.onQuotedMessageTap,
+                replyBuilder: widget.replyBuilder,
               ),
             if (widget.hasNonUrlAttachments)
               ParseAttachments(

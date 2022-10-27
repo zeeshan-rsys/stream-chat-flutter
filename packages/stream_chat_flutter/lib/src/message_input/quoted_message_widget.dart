@@ -23,6 +23,7 @@ class StreamQuotedMessageWidget extends StatelessWidget {
     this.onTap,
     this.onQuotedMessageClear,
     this.composing = true,
+    this.mianAxisAlignment = MainAxisAlignment.start,
   });
 
   /// The message
@@ -56,9 +57,22 @@ class StreamQuotedMessageWidget extends StatelessWidget {
   /// True if the message is being composed
   final bool composing;
 
+  /// align reply message to user's
+  final MainAxisAlignment mianAxisAlignment;
+
   @override
   Widget build(BuildContext context) {
     final children = [
+      if (message.user != null)
+        StreamUserAvatar(
+          user: message.user!,
+          constraints: const BoxConstraints.tightFor(
+            height: 24,
+            width: 24,
+          ),
+          showOnlineStatus: false,
+        ),
+      const SizedBox(width: 8),
       Flexible(
         child: _QuotedMessage(
           message: message,
@@ -71,16 +85,6 @@ class StreamQuotedMessageWidget extends StatelessWidget {
           attachmentThumbnailBuilders: attachmentThumbnailBuilders,
         ),
       ),
-      const SizedBox(width: 8),
-      if (message.user != null)
-        StreamUserAvatar(
-          user: message.user!,
-          constraints: const BoxConstraints.tightFor(
-            height: 24,
-            width: 24,
-          ),
-          showOnlineStatus: false,
-        ),
     ];
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -90,8 +94,8 @@ class StreamQuotedMessageWidget extends StatelessWidget {
         child: Padding(
           padding: padding,
           child: Row(
+            mainAxisAlignment: mianAxisAlignment,
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
             children: reverse ? children.reversed.toList() : children,
           ),
         ),
