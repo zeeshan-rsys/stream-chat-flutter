@@ -1,5 +1,5 @@
 name: stream_chat_flutter
-repository: https://github.com/GetStream/stream-chat-flutter
+repository: https://github.com/zeeshan-rsys/stream-chat-flutter.git
 
 packages:
   - packages/**
