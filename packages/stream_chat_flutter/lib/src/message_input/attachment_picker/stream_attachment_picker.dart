@@ -699,7 +699,7 @@ Widget mobileAttachmentPickerBuilder({
   double attachmentThumbnailScale = 1,
   required bool showVideo,
   required bool showFile,
-  required void Function(Attachment?)? onAttachmentPicked,
+  required void Function(Attachment?,BuildContext context)? onAttachmentPicked,
 }) {
   return StreamMobileAttachmentPickerBottomSheet(
     controller: controller,
@@ -739,8 +739,7 @@ Widget mobileAttachmentPickerBuilder({
             return StreamFilePicker(
               onFilePicked: (file) async {
                 if (onAttachmentPicked != null) {
-                  onAttachmentPicked(file);
-                  return Navigator.pop(context);
+                  onAttachmentPicked(file,context);
                 }
                 if (file != null) await controller.addAttachment(file);
                 return Navigator.pop(context, controller.value);
@@ -756,8 +755,8 @@ Widget mobileAttachmentPickerBuilder({
           return StreamImagePicker(
             onImagePicked: (image) async {
               if (onAttachmentPicked != null) {
-                onAttachmentPicked(image);
-                return Navigator.pop(context);
+                onAttachmentPicked(image,context);
+
               }
               if (image != null) {
                 await controller.addAttachment(image);
@@ -776,8 +775,8 @@ Widget mobileAttachmentPickerBuilder({
             return StreamVideoPicker(
               onVideoPicked: (video) async {
                 if (onAttachmentPicked != null) {
-                  onAttachmentPicked(video);
-                  return Navigator.pop(context);
+                  onAttachmentPicked(video,context);
+
                 }
                 if (video != null) {
                   await controller.addAttachment(video);

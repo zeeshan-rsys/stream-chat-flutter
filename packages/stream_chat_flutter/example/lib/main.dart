@@ -284,16 +284,11 @@ class _ChannelPageState extends State<ChannelPage> {
                       messageInputController.clearQuotedMessage,
                   focusNode: focusNode,
                   messageInputController: messageInputController,
-                
-                  attachmentButtonBuilder: (
-                    ctx,
-                    attachmentButton, {
-                    showFile,
-                    showVideo,
-                  }) {
+                  attachmentButtonBuilder: (ctx, attachmentButton) {
                     return InkWell(
                         onTap: () {
-                          attachmentButton.onPressed(false, null, (attachment) {
+                          attachmentButton.onPressed(false, null,
+                              (attachment, BuildContext context) {
                             print('images ---  $attachment');
 
                             if (attachment?.mimeType?.contains('video') ==

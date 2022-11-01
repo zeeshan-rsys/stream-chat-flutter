@@ -190,10 +190,8 @@ typedef CommandButtonBuilder = Widget Function(
 /// {@endtemplate}
 typedef AttachmentButtonBuilder = Widget Function(
   BuildContext context,
-  AttachmentButton attachmentButton, {
-  bool? showVideo,
-  bool? showFile,
-});
+  AttachmentButton attachmentButton,
+);
 
 /// {@template quotedMessageAttachmentThumbnailBuilder}
 /// A widget builder for building a custom quoted message attachment thumbnail.
