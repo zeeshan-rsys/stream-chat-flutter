@@ -15,7 +15,7 @@ void main() {
               color: StreamChatThemeData.light()
                   .messageInputTheme
                   .actionButtonIdleColor!,
-              onPressed: () {
+              onPressed: (_,__,___) {
                 count++;
               },
             ),
@@ -40,7 +40,7 @@ void main() {
               color: StreamChatThemeData.light()
                   .messageInputTheme
                   .actionButtonIdleColor!,
-              onPressed: () {},
+              onPressed: (a, _a,__) {},
             ),
           ),
         ),

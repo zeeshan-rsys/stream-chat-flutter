@@ -15,14 +15,24 @@ class AttachmentButton extends StatelessWidget {
   /// The color of the button.
   final Color color;
 
-  /// The callback to perform when the button is tapped or clicked.
-  final VoidCallback onPressed;
+  /// The callback to perform when the button is tapped or clicked[showVideo],
+  /// [showFile] [attachment]
+  final void Function(
+    bool? showVideo,
+    bool? showFile, 
+     void Function(Attachment?)? onAttachmentPicked,
+  ) onPressed;
 
   /// Returns a copy of this object with the given fields updated.
   AttachmentButton copyWith({
     Key? key,
     Color? color,
-    VoidCallback? onPressed,
+    void Function(
+      bool? showVideo,
+      bool? showFile, 
+       void Function(Attachment?)? onAttachmentPicked,
+    )?
+        onPressed,
   }) {
     return AttachmentButton(
       key: key ?? this.key,
@@ -33,6 +43,8 @@ class AttachmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void Function(Attachment?)? onAttachmentPicked;
+
     return IconButton(
       icon: StreamSvgIcon.attach(
         color: color,
@@ -43,7 +55,13 @@ class AttachmentButton extends StatelessWidget {
         width: 24,
       ),
       splashRadius: 24,
-      onPressed: onPressed,
+      onPressed: () {
+        onPressed(
+          null,
+          null,
+          onAttachmentPicked,
+        );
+      },
     );
   }
 }

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:developer' as d;
 
 import 'package:cached_network_image/cached_network_image.dart'
     hide ErrorListener;
@@ -434,6 +435,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     return StreamMessageValueListenableBuilder(
       valueListenable: _effectiveController,
       builder: (context, value, _) {
+        d.log('attachment -- ${_effectiveController.ogAttachment}');
         Widget child = DecoratedBox(
           decoration: BoxDecoration(
             color: _messageInputTheme.inputBackgroundColor,
@@ -584,15 +586,27 @@ class StreamMessageInputState extends State<StreamMessageInput>
     );
   }
 
-  Flex _buildTextField(BuildContext context) {
+  Flex _buildTextField(
+    BuildContext context, {
+    bool? showFile,
+    bool? showVideo,
+  }) {
     return Flex(
       direction: Axis.horizontal,
       children: <Widget>[
         if (!_commandEnabled && widget.actionsLocation == ActionsLocation.left)
-          _buildExpandActionsButton(context),
+          _buildExpandActionsButton(
+            context,
+            showFile: showFile ?? false,
+            showVideo: showVideo ?? false,
+          ),
         _buildTextInput(context),
         if (!_commandEnabled && widget.actionsLocation == ActionsLocation.right)
-          _buildExpandActionsButton(context),
+          _buildExpandActionsButton(
+            context,
+            showFile: showFile ?? false,
+            showVideo: showVideo ?? false,
+          ),
         if (widget.sendButtonLocation == SendButtonLocation.outside)
           _buildSendButton(context),
       ],
@@ -614,7 +628,11 @@ class StreamMessageInputState extends State<StreamMessageInput>
     );
   }
 
-  Widget _buildExpandActionsButton(BuildContext context) {
+  Widget _buildExpandActionsButton(
+    BuildContext context, {
+    bool showFile = false,
+    bool showVideo = false,
+  }) {
     final channel = StreamChannel.of(context).channel;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -655,7 +673,11 @@ class StreamMessageInputState extends State<StreamMessageInput>
                   if (!widget.disableAttachments &&
                       channel.ownCapabilities
                           .contains(PermissionType.uploadFile))
-                    _buildAttachmentButton(context),
+                    _buildAttachmentButton(
+                      context,
+                      showFile: showFile,
+                      showVideo: showVideo,
+                    ),
                   if (widget.showCommandsButton &&
                       !_isEditing &&
                       channel.state != null &&
@@ -670,13 +692,32 @@ class StreamMessageInputState extends State<StreamMessageInput>
     );
   }
 
-  Widget _buildAttachmentButton(BuildContext context) {
+  Widget _buildAttachmentButton(
+    BuildContext context, {
+    required bool showVideo,
+    required bool showFile,
+  }) {
     final defaultButton = AttachmentButton(
       color: _messageInputTheme.actionButtonIdleColor!,
-      onPressed: _onAttachmentButtonPressed,
+      onPressed: (
+        showVideo,
+        showFile,
+        onAttachmentPicked,
+      ) {
+        _onAttachmentButtonPressed(
+          showFile: showFile,
+          showVideo: showVideo,
+          onAttachmentPicked: onAttachmentPicked,
+        );
+      },
     );
 
-    return widget.attachmentButtonBuilder?.call(context, defaultButton) ??
+    return widget.attachmentButtonBuilder?.call(
+          context,
+          defaultButton,
+          showFile: showFile,
+          showVideo: showVideo,
+        ) ??
         defaultButton;
   }
 
@@ -685,11 +726,18 @@ class StreamMessageInputState extends State<StreamMessageInput>
   /// On mobile, this will open the file selection bottom sheet. On desktop,
   /// this will open the native file system and allow the user to select one
   /// or more files.
-  Future<void> _onAttachmentButtonPressed() async {
+  Future<void> _onAttachmentButtonPressed({
+    bool? showVideo,
+    bool? showFile,
+    required void Function(Attachment?)? onAttachmentPicked,
+  }) async {
     final attachments = await showStreamAttachmentPickerModalBottomSheet(
       context: context,
       initialAttachments: _effectiveController.attachments,
       useRootNavigator: true,
+      showFile: showFile ?? false,
+      showVideo: showVideo ?? false,
+      onAttachmentPicked: onAttachmentPicked,
     );
 
     if (attachments != null) {
@@ -708,6 +756,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     return Expanded(
       child: DropTarget(
         onDragDone: (details) async {
+          d.log('attachment -- ${details.files}');
           final files = details.files;
           final attachments = <Attachment>[];
           for (final file in files) {
@@ -1022,7 +1071,6 @@ class StreamMessageInputState extends State<StreamMessageInput>
     return StreamQuotedMessageWidget(
       reverse: true,
       showBorder: !containsUrl,
-      
       message: _effectiveController.message.quotedMessage!,
       messageTheme: _streamChatTheme.otherMessageTheme,
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
@@ -1041,6 +1089,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     final remainingAttachments = nonOGAttachments
         .where((it) => it.type != 'file')
         .toList(growable: false);
+
     return Column(
       children: [
         if (fileAttachments.isNotEmpty)
@@ -1203,6 +1252,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
               child: SvgPicture.asset(
                 'svgs/video_call_icon.svg',
                 package: 'stream_chat_flutter',
+                color: Colors.red,
               ),
             ),
           ],

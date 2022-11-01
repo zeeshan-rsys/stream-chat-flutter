@@ -84,6 +84,9 @@ Future<T?> showStreamAttachmentPickerModalBottomSheet<T>({
   ThumbnailFormat attachmentThumbnailFormat = ThumbnailFormat.jpeg,
   int attachmentThumbnailQuality = 100,
   double attachmentThumbnailScale = 1,
+  required bool showVideo,
+  required bool showFile,
+  required void Function(Attachment?)? onAttachmentPicked,
 }) {
   final colorTheme = StreamChatTheme.of(context).colorTheme;
   final color = backgroundColor ?? colorTheme.inputBg;
@@ -124,6 +127,9 @@ Future<T?> showStreamAttachmentPickerModalBottomSheet<T>({
             mobile: (context) {
               return mobileAttachmentPickerBuilder.call(
                 context: context,
+                onAttachmentPicked: onAttachmentPicked,
+                showFile: showFile,
+                showVideo: showVideo,
                 controller: controller,
                 customOptions: customOptions,
                 attachmentThumbnailSize: attachmentThumbnailSize,
