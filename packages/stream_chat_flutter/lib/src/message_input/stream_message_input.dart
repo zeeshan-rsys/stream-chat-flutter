@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:developer' as d;
 
 import 'package:cached_network_image/cached_network_image.dart'
     hide ErrorListener;
@@ -435,7 +434,6 @@ class StreamMessageInputState extends State<StreamMessageInput>
     return StreamMessageValueListenableBuilder(
       valueListenable: _effectiveController,
       builder: (context, value, _) {
-        d.log('attachment -- ${_effectiveController.ogAttachment}');
         Widget child = DecoratedBox(
           decoration: BoxDecoration(
             color: _messageInputTheme.inputBackgroundColor,
@@ -632,6 +630,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     BuildContext context, {
     bool showFile = false,
     bool showVideo = false,
+    void Function(Attachment?)? onAttachmentPicked,
   }) {
     final channel = StreamChannel.of(context).channel;
     return Padding(
@@ -677,6 +676,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
                       context,
                       showFile: showFile,
                       showVideo: showVideo,
+                      onAttachmentPicked: onAttachmentPicked,
                     ),
                   if (widget.showCommandsButton &&
                       !_isEditing &&
@@ -696,6 +696,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     BuildContext context, {
     required bool showVideo,
     required bool showFile,
+   required void Function(Attachment?)? onAttachmentPicked,
   }) {
     final defaultButton = AttachmentButton(
       color: _messageInputTheme.actionButtonIdleColor!,
@@ -756,7 +757,6 @@ class StreamMessageInputState extends State<StreamMessageInput>
     return Expanded(
       child: DropTarget(
         onDragDone: (details) async {
-          d.log('attachment -- ${details.files}');
           final files = details.files;
           final attachments = <Attachment>[];
           for (final file in files) {
