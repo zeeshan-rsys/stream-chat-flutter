@@ -284,6 +284,9 @@ class _ChannelPageState extends State<ChannelPage> {
                       messageInputController.clearQuotedMessage,
                   focusNode: focusNode,
                   messageInputController: messageInputController,
+                  attachmentButtonBuilder: (context, attachmentButton,
+                          {showFile, showVideo}) =>
+                      Container(),
                 ),
               ],
             ),
