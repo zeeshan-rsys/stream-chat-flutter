@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:developer' as d;
+
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
@@ -99,11 +99,9 @@ class MessageCard extends StatefulWidget {
   /// align reply message to user's
   final MainAxisAlignment mainAxisAlignment;
 
-
   /// [quoted maessage ] custom builder
   final Widget Function(BuildContext context, Message? quotedMessage)?
       replyBuilder;
-
 
   @override
   State<MessageCard> createState() => _MessageCardState();
@@ -140,7 +138,6 @@ class _MessageCardState extends State<MessageCard> {
 
   @override
   Widget build(BuildContext context) {
-    d.log('quoted - ${widget.hasQuotedMessage}');
     return Card(
       elevation: 0,
       margin: EdgeInsets.symmetric(

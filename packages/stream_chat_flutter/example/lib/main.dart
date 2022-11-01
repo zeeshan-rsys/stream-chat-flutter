@@ -244,7 +244,7 @@ class ChannelPage extends StatefulWidget {
 class _ChannelPageState extends State<ChannelPage> {
   late final messageInputController = StreamMessageInputController();
   final focusNode = FocusNode();
-
+  void onAttachmentPicked(Attachment? val) {}
   @override
   Widget build(BuildContext context) => Navigator(
         onGenerateRoute: (settings) => MaterialPageRoute(
@@ -284,6 +284,25 @@ class _ChannelPageState extends State<ChannelPage> {
                       messageInputController.clearQuotedMessage,
                   focusNode: focusNode,
                   messageInputController: messageInputController,
+                  attachmentButtonBuilder: (
+                    ctx,
+                    attachmentButton, {
+                    showFile,
+                    showVideo,
+                  }) {
+                    return InkWell(
+                        onTap: () {
+                          attachmentButton.onPressed(false, null, (attachment) {
+                            print('images ---  $attachment');
+
+                            if (attachment?.mimeType?.contains('video') ==
+                                true) {
+                              return;
+                            }
+                          });
+                        },
+                        child: const Icon(Icons.add));
+                  },
                 ),
               ],
             ),
