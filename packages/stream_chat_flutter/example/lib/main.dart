@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -274,6 +276,9 @@ class _ChannelPageState extends State<ChannelPage> {
                         (context, details, messages, defaultWidget) {
                       return defaultWidget.copyWith(
                         onReplyTap: reply,
+                        showUsername: true,
+                        textBuilder: (p0, message) =>
+                            Text('data ${message.user?.name}'),
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       );
                     },

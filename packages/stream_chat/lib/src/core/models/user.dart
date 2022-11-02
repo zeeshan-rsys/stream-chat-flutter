@@ -83,7 +83,7 @@ class User extends Equatable {
   String get name {
     if (extraData.containsKey('name') && extraData['name'] != null) {
       final name = extraData['name']! as String;
-      if (name.isNotEmpty) return name;
+      return getName(name) ?? '';
     }
     return id;
   }
@@ -171,7 +171,7 @@ class User extends Equatable {
       User(
         id: id ?? this.id,
         role: role ?? this.role,
-        name: name ??
+        name: getName(name) ??
             extraData?['name'] as String? ??
             // Using extraData value in order to not use id as name.
             this.extraData['name'] as String?,
@@ -199,4 +199,13 @@ class User extends Equatable {
         teams,
         language,
       ];
+
+  String? getName(String? name) {
+    if (name != null && name.isNotEmpty) {
+      final firstName = name.split(' ').first;
+      final lastName = name.split(' ').length > 1 ? name.split(' ')[1] : '';
+      return '$firstName $lastName';
+    }
+    return '';
+  }
 }
