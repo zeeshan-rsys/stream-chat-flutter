@@ -98,6 +98,7 @@ class StreamMessageWidget extends StatefulWidget {
     this.imageAttachmentThumbnailCropType = 'center',
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.replyBuilder,
+    this.attachmentUserBuilder,
   }) : attachmentBuilders = {
           'image': (context, message, attachments) {
             final border = RoundedRectangleBorder(
@@ -112,54 +113,74 @@ class StreamMessageWidget extends StatefulWidget {
             if (attachments.length > 1) {
               return Padding(
                 padding: attachmentPadding,
-                child: WrapAttachmentWidget(
-                  attachmentWidget: Material(
-                    color: messageTheme.messageBackgroundColor,
-                    child: StreamImageGroup(
-                      constraints: BoxConstraints(
-                        maxWidth: 400,
-                        minWidth: 400,
-                        maxHeight: mediaQueryData.size.height * 0.3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (attachmentUserBuilder == null)
+                      Container()
+                    else
+                      attachmentUserBuilder(context, message.user),
+                    WrapAttachmentWidget(
+                      attachmentWidget: Material(
+                        color: messageTheme.messageBackgroundColor,
+                        child: StreamImageGroup(
+                          constraints: BoxConstraints(
+                            maxWidth: 400,
+                            minWidth: 400,
+                            maxHeight: mediaQueryData.size.height * 0.3,
+                          ),
+                          images: attachments,
+                          message: message,
+                          messageTheme: messageTheme,
+                          onShowMessage: onShowMessage,
+                          onReplyMessage: onReplyTap,
+                          onAttachmentTap: onAttachmentTap,
+                          imageThumbnailSize: imageAttachmentThumbnailSize,
+                          imageThumbnailResizeType:
+                              imageAttachmentThumbnailResizeType,
+                          imageThumbnailCropType:
+                              imageAttachmentThumbnailCropType,
+                        ),
                       ),
-                      images: attachments,
-                      message: message,
-                      messageTheme: messageTheme,
-                      onShowMessage: onShowMessage,
-                      onReplyMessage: onReplyTap,
-                      onAttachmentTap: onAttachmentTap,
-                      imageThumbnailSize: imageAttachmentThumbnailSize,
-                      imageThumbnailResizeType:
-                          imageAttachmentThumbnailResizeType,
-                      imageThumbnailCropType: imageAttachmentThumbnailCropType,
+                      attachmentShape: border,
                     ),
-                  ),
-                  attachmentShape: border,
+                  ],
                 ),
               );
             }
 
-            return WrapAttachmentWidget(
-              attachmentWidget: StreamImageAttachment(
-                attachment: attachments[0],
-                message: message,
-                messageTheme: messageTheme,
-                constraints: BoxConstraints(
-                  maxWidth: 400,
-                  minWidth: 400,
-                  maxHeight: mediaQueryData.size.height * 0.3,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (attachmentUserBuilder == null)
+                  Container()
+                else
+                  attachmentUserBuilder(context, message.user),
+                WrapAttachmentWidget(
+                  attachmentWidget: StreamImageAttachment(
+                    attachment: attachments[0],
+                    message: message,
+                    messageTheme: messageTheme,
+                    constraints: BoxConstraints(
+                      maxWidth: 400,
+                      minWidth: 400,
+                      maxHeight: mediaQueryData.size.height * 0.3,
+                    ),
+                    onShowMessage: onShowMessage,
+                    onReplyMessage: onReplyTap,
+                    onAttachmentTap: onAttachmentTap != null
+                        ? () {
+                            onAttachmentTap.call(message, attachments[0]);
+                          }
+                        : null,
+                    imageThumbnailSize: imageAttachmentThumbnailSize,
+                    imageThumbnailResizeType:
+                        imageAttachmentThumbnailResizeType,
+                    imageThumbnailCropType: imageAttachmentThumbnailCropType,
+                  ),
+                  attachmentShape: border,
                 ),
-                onShowMessage: onShowMessage,
-                onReplyMessage: onReplyTap,
-                onAttachmentTap: onAttachmentTap != null
-                    ? () {
-                        onAttachmentTap.call(message, attachments[0]);
-                      }
-                    : null,
-                imageThumbnailSize: imageAttachmentThumbnailSize,
-                imageThumbnailResizeType: imageAttachmentThumbnailResizeType,
-                imageThumbnailCropType: imageAttachmentThumbnailCropType,
-              ),
-              attachmentShape: border,
+              ],
             );
           },
           'video': (context, message, attachments) {
@@ -206,29 +227,38 @@ class StreamMessageWidget extends StatefulWidget {
               borderRadius: attachmentBorderRadiusGeometry ?? BorderRadius.zero,
             );
 
-            return WrapAttachmentWidget(
-              attachmentWidget: Column(
-                children: attachments.map((attachment) {
-                  final mediaQueryData = MediaQuery.of(context);
-                  return StreamGiphyAttachment(
-                    attachment: attachment,
-                    message: message,
-                    constraints: BoxConstraints(
-                      maxWidth: 400,
-                      minWidth: 400,
-                      maxHeight: mediaQueryData.size.height * 0.3,
-                    ),
-                    onShowMessage: onShowMessage,
-                    onReplyMessage: onReplyTap,
-                    onAttachmentTap: onAttachmentTap != null
-                        ? () {
-                            onAttachmentTap(message, attachment);
-                          }
-                        : null,
-                  );
-                }).toList(),
-              ),
-              attachmentShape: border,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (attachmentUserBuilder == null)
+                  Container()
+                else
+                  attachmentUserBuilder(context, message.user),
+                WrapAttachmentWidget(
+                  attachmentWidget: Column(
+                    children: attachments.map((attachment) {
+                      final mediaQueryData = MediaQuery.of(context);
+                      return StreamGiphyAttachment(
+                        attachment: attachment,
+                        message: message,
+                        constraints: BoxConstraints(
+                          maxWidth: 400,
+                          minWidth: 400,
+                          maxHeight: mediaQueryData.size.height * 0.3,
+                        ),
+                        onShowMessage: onShowMessage,
+                        onReplyMessage: onReplyTap,
+                        onAttachmentTap: onAttachmentTap != null
+                            ? () {
+                                onAttachmentTap(message, attachment);
+                              }
+                            : null,
+                      );
+                    }).toList(),
+                  ),
+                  attachmentShape: border,
+                ),
+              ],
             );
           },
           'file': (context, message, attachments) {
@@ -241,31 +271,37 @@ class StreamMessageWidget extends StatefulWidget {
             );
 
             return Column(
-              children: attachments
-                  .map<Widget>((attachment) {
-                    final mediaQueryData = MediaQuery.of(context);
-                    return WrapAttachmentWidget(
-                      attachmentWidget: StreamFileAttachment(
-                        message: message,
-                        attachment: attachment,
-                        constraints: BoxConstraints(
-                          maxWidth: 400,
-                          minWidth: 400,
-                          maxHeight: mediaQueryData.size.height * 0.3,
+              children: [
+                if (attachmentUserBuilder == null)
+                  Container()
+                else
+                  attachmentUserBuilder(context, message.user),
+                ...attachments
+                    .map<Widget>((attachment) {
+                      final mediaQueryData = MediaQuery.of(context);
+                      return WrapAttachmentWidget(
+                        attachmentWidget: StreamFileAttachment(
+                          message: message,
+                          attachment: attachment,
+                          constraints: BoxConstraints(
+                            maxWidth: 400,
+                            minWidth: 400,
+                            maxHeight: mediaQueryData.size.height * 0.3,
+                          ),
+                          onAttachmentTap: onAttachmentTap != null
+                              ? () {
+                                  onAttachmentTap(message, attachment);
+                                }
+                              : null,
                         ),
-                        onAttachmentTap: onAttachmentTap != null
-                            ? () {
-                                onAttachmentTap(message, attachment);
-                              }
-                            : null,
-                      ),
-                      attachmentShape: border,
-                    );
-                  })
-                  .insertBetween(SizedBox(
-                    height: attachmentPadding.vertical / 2,
-                  ))
-                  .toList(),
+                        attachmentShape: border,
+                      );
+                    })
+                    .insertBetween(SizedBox(
+                      height: attachmentPadding.vertical / 2,
+                    ))
+                    .toList(),
+              ],
             );
           },
         }..addAll(customAttachmentBuilders ?? {});
@@ -535,6 +571,9 @@ class StreamMessageWidget extends StatefulWidget {
   final Widget Function(BuildContext context, Message? quotedMessage)?
       replyBuilder;
 
+  final Widget Function(BuildContext context, User? user)?
+      attachmentUserBuilder;
+
   /// {@template copyWith}
   /// Creates a copy of [StreamMessageWidget] with specified attributes
   /// overridden.
@@ -597,11 +636,14 @@ class StreamMessageWidget extends StatefulWidget {
     String? imageAttachmentThumbnailCropType,
     MainAxisAlignment? mainAxisAlignment,
     Widget Function(BuildContext context, Message? quotedMessage)? replyBuilder,
+    Widget Function(BuildContext context, User? user)? attachmentUserBuilder,
   }) {
     return StreamMessageWidget(
       key: key ?? this.key,
       mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
       replyBuilder: replyBuilder,
+      attachmentUserBuilder:
+          attachmentUserBuilder ?? this.attachmentUserBuilder,
       onMentionTap: onMentionTap ?? this.onMentionTap,
       onThreadTap: onThreadTap ?? this.onThreadTap,
       onReplyTap: onReplyTap ?? this.onReplyTap,
