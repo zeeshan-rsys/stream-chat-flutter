@@ -699,7 +699,7 @@ Widget mobileAttachmentPickerBuilder({
   double attachmentThumbnailScale = 1,
   required bool showVideo,
   required bool showFile,
-  required void Function(Attachment?,BuildContext context)? onAttachmentPicked,
+  required void Function(Attachment?, BuildContext context)? onAttachmentPicked,
 }) {
   return StreamMobileAttachmentPickerBottomSheet(
     controller: controller,
@@ -723,7 +723,8 @@ Widget mobileAttachmentPickerBuilder({
             mediaThumbnailScale: attachmentThumbnailScale,
             onMediaItemSelected: (media) async {
               if (selectedIds.contains(media.id)) {
-                return controller.removeAssetAttachment(media);
+                controller.removeAssetAttachment(media);
+                return Navigator.pop(context);
               }
               return controller.addAssetAttachment(media);
             },
@@ -739,7 +740,8 @@ Widget mobileAttachmentPickerBuilder({
             return StreamFilePicker(
               onFilePicked: (file) async {
                 if (onAttachmentPicked != null) {
-                  onAttachmentPicked(file,context);
+                  onAttachmentPicked(file, context);
+                  return Navigator.pop(context);
                 }
                 if (file != null) await controller.addAttachment(file);
                 return Navigator.pop(context, controller.value);
@@ -755,8 +757,8 @@ Widget mobileAttachmentPickerBuilder({
           return StreamImagePicker(
             onImagePicked: (image) async {
               if (onAttachmentPicked != null) {
-                onAttachmentPicked(image,context);
-
+                onAttachmentPicked(image, context);
+                return Navigator.pop(context);
               }
               if (image != null) {
                 await controller.addAttachment(image);
@@ -775,8 +777,7 @@ Widget mobileAttachmentPickerBuilder({
             return StreamVideoPicker(
               onVideoPicked: (video) async {
                 if (onAttachmentPicked != null) {
-                  onAttachmentPicked(video,context);
-
+                  return onAttachmentPicked(video, context);
                 }
                 if (video != null) {
                   await controller.addAttachment(video);
