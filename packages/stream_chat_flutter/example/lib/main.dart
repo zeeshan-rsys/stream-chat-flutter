@@ -287,15 +287,7 @@ class _ChannelPageState extends State<ChannelPage> {
                   attachmentButtonBuilder: (ctx, attachmentButton) {
                     return InkWell(
                         onTap: () {
-                          attachmentButton.onPressed(false, null,
-                              (attachment, BuildContext context) {
-                            print('images ---  $attachment');
-
-                            if (attachment?.mimeType?.contains('video') ==
-                                true) {
-                              return;
-                            }
-                          });
+                          attachmentButton.onPressed(false, true, null);
                         },
                         child: const Icon(Icons.add));
                   },
