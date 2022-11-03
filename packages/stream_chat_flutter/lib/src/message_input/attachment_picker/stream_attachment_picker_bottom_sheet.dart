@@ -86,7 +86,7 @@ Future<T?> showStreamAttachmentPickerModalBottomSheet<T>({
   double attachmentThumbnailScale = 1,
   required bool showVideo,
   required bool showFile,
-  required void Function(Attachment?,BuildContext)? onAttachmentPicked,
+  required void Function(dynamic,BuildContext)? onAttachmentPicked,
 }) {
   final colorTheme = StreamChatTheme.of(context).colorTheme;
   final color = backgroundColor ?? colorTheme.inputBg;
