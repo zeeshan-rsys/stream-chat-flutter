@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/src/message_input/quoted_message_widget.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -63,7 +61,6 @@ class _QuotedMessageState extends State<QuotedMessage> {
         ? () => widget.onQuotedMessageTap!(widget.message.quotedMessageId)
         : null;
     final chatThemeData = _streamChatTheme;
-    log("message ${widget.replyBuilder}");
     return widget.replyBuilder == null
         ? StreamQuotedMessageWidget(
             onTap: onTap,

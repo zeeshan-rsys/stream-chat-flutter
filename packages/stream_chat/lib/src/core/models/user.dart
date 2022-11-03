@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stream_chat/src/core/util/serializer.dart';
@@ -49,7 +51,9 @@ class User extends Equatable {
         // For backwards compatibility, set 'name', 'image' in [extraData].
         extraData = {
           ...extraData,
-          if (name != null) 'name': name,
+          if (name != null)
+            'name':
+                '${name.split(' ').first} ${name.split(' ').last.length > 1 ? name.split(' ').last.substring(0, 1) : ''}',
           if (image != null) 'image': image,
         };
 
@@ -172,9 +176,9 @@ class User extends Equatable {
         id: id ?? this.id,
         role: role ?? this.role,
         name: getName(name) ??
-            extraData?['name'] as String? ??
+            getName(extraData?['name'] as String?) ??
             // Using extraData value in order to not use id as name.
-            this.extraData['name'] as String?,
+            getName(this.extraData['name'] as String?),
         image: image ?? extraData?['image'] as String? ?? this.image,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -203,8 +207,8 @@ class User extends Equatable {
   String? getName(String? name) {
     if (name != null && name.isNotEmpty) {
       final firstName = name.split(' ').first;
-      final lastName = name.split(' ').length > 1 ? name.split(' ')[1] : '';
-      return '$firstName $lastName';
+      final lastName = name.split(' ').length > 1 ? name.split(' ').last : '';
+      return '$firstName ${lastName.length > 1 ? lastName.substring(0, 1) : ''}';
     }
     return '';
   }
