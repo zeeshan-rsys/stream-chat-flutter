@@ -289,7 +289,10 @@ class _ChannelPageState extends State<ChannelPage> {
                   attachmentButtonBuilder: (ctx, attachmentButton) {
                     return InkWell(
                         onTap: () {
-                          attachmentButton.onPressed(false, true, null);
+                          attachmentButton.onPressed(false, true,
+                              (attachment, context) {
+                            log('attachment -- ${attachment}');
+                          });
                         },
                         child: const Icon(Icons.add));
                   },

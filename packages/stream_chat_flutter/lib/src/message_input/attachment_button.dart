@@ -20,7 +20,7 @@ class AttachmentButton extends StatelessWidget {
   final void Function(
     bool? showVideo,
     bool? showFile, 
-     void Function(Attachment?,BuildContext)? onAttachmentPicked,
+     void Function(dynamic,BuildContext)? onAttachmentPicked,
   ) onPressed;
 
   /// Returns a copy of this object with the given fields updated.
@@ -43,7 +43,7 @@ class AttachmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void Function(Attachment?,BuildContext)? onAttachmentPicked;
+    void Function(dynamic,BuildContext)? onAttachmentPicked;
 
     return IconButton(
       icon: StreamSvgIcon.attach(

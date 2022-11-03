@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -699,7 +700,7 @@ Widget mobileAttachmentPickerBuilder({
   double attachmentThumbnailScale = 1,
   required bool showVideo,
   required bool showFile,
-  required void Function(Attachment?, BuildContext context)? onAttachmentPicked,
+  required void Function(dynamic, BuildContext context)? onAttachmentPicked,
 }) {
   return StreamMobileAttachmentPickerBottomSheet(
     controller: controller,
@@ -722,6 +723,10 @@ Widget mobileAttachmentPickerBuilder({
             mediaThumbnailQuality: attachmentThumbnailQuality,
             mediaThumbnailScale: attachmentThumbnailScale,
             onMediaItemSelected: (media) async {
+               if (onAttachmentPicked != null) {
+                  onAttachmentPicked(media, context);
+                  return Navigator.pop(context);
+                }
               if (selectedIds.contains(media.id)) {
                 controller.removeAssetAttachment(media);
                 return Navigator.pop(context);

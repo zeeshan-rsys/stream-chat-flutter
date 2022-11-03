@@ -630,7 +630,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     BuildContext context, {
     bool showFile = false,
     bool showVideo = false,
-    void Function(Attachment?,BuildContext)? onAttachmentPicked,
+    void Function(dynamic,BuildContext)? onAttachmentPicked,
   }) {
     final channel = StreamChannel.of(context).channel;
     return Padding(
@@ -696,7 +696,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
     BuildContext context, {
     required bool showVideo,
     required bool showFile,
-    required void Function(Attachment?,BuildContext)? onAttachmentPicked,
+    required void Function(dynamic,BuildContext)? onAttachmentPicked,
   }) {
     final defaultButton = AttachmentButton(
       color: _messageInputTheme.actionButtonIdleColor!,
@@ -728,7 +728,7 @@ class StreamMessageInputState extends State<StreamMessageInput>
   Future<void> _onAttachmentButtonPressed({
     bool? showVideo,
     bool? showFile,
-    required void Function(Attachment?, BuildContext)? onAttachmentPicked,
+    required void Function(dynamic, BuildContext)? onAttachmentPicked,
   }) async {
     final attachments = await showStreamAttachmentPickerModalBottomSheet(
       context: context,
